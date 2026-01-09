@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db, MovieModel
 from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
 
-router = APIRouter(prefix="/movies/", tags=["movies"])
+router = APIRouter(prefix="/movies", tags=["movies"])
 
 
 @router.get("/", response_model=MovieListResponseSchema)
@@ -47,9 +47,9 @@ async def get_movies(page: int = Query(1, ge=1, description="Page number (starti
     )
 
 
-@router.get("/{movie_id}/", response_model=MovieDetailResponseSchema)
-async def get_movie(id: int, db: AsyncSession = Depends(get_db)):
-    query = select(MovieModel).where(MovieModel.id == id)
+@router.get("/{movie_id}", response_model=MovieDetailResponseSchema)
+async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(MovieModel).where(MovieModel.id == movie_id)
     result = await db.execute(query)
     movie = result.scalar_one_or_none()
 
